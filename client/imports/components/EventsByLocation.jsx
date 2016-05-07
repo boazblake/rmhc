@@ -17,7 +17,9 @@ export default class EventsByLocation extends React.Component {
   }
 
   componentWillMount() {
+    console.log('props in EBL>>>', this.props)
     if (this.props.events.length > 0) {
+      console.log('componet will mount!')
       this.getEventsGroupedByDistance((eventsGroupedByDistance) => {
         this.setState({eventsGroupedByDistance, loading: false});
       });
@@ -25,13 +27,17 @@ export default class EventsByLocation extends React.Component {
   }
 
   getEventsGroupedByDistance(callback) {
+    console.log('hwhaaaaat')
     const {events, origin} = this.props;
+    console.log('first origin', origin)
+    console.log('first events', events)
 
     const destinations = events.map((event) => (
       `${event.address.street} ${event.address.zip}`
     ));
 
     this.getGoogleDistance([origin], destinations, (response, status) => {
+      console.log('origin', origin);
       if (status === google.maps.DistanceMatrixStatus.OK) {
         const distances = _.map(response.rows[0].elements, 'distance.value');
         const eventsWithDistance = _(_.zip(events, distances))

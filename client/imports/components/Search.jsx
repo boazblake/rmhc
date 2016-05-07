@@ -12,25 +12,30 @@ export default class Search extends React.Component {
 searchByGeolocation(){
   const self = this;
   navigator.geolocation.getCurrentPosition(function(position) {
-  var lat = position.coords.latitude
-  var long = position.coords.longitude
-  APIKEY=''
-  // let url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&key='+APIKEY  
-  // HTTP.call( 'GET', url, function( error, response ) {
-  //   console.log('error', error)
-  //   console.log('response', response.data.results[0].formatted_address)
-  //   var returnedQ = response.data.results[0].formatted_address
-     
-  //   self.setState({query:returnedQ})
-  // });
+    var lat = position.coords.latitude
+    var long = position.coords.longitude
+    APIKEY=''
+    // let url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&key='+APIKEY  
+    // HTTP.call( 'GET', url, function( error, response ) {
+    //   console.log('error', error)
+    //   console.log('response', response.data.results[0].formatted_address)
+    //   var returnedQ = response.data.results[0].formatted_address
+       
+    //   self.setState({query:returnedQ})
+    // });
 
-  const latlng = {lat: Number(lat), lng:Number(long)}
-  const geocoder = new google.maps.Geocoder;
-  geocoder.geocode({'location':latlng}, function(results, status){
-    if (results[0].formatted_address){
-      self.setState({query:results[0].formatted_address})
-    }
-  })
+    const latlng = {lat: Number(lat), lng:Number(long)}
+    const geocoder = new google.maps.Geocoder;
+    geocoder.geocode({'location':latlng}, function(results, status){
+      if (results && results.length){
+        const { formatted_address } = results[0];
+        // console.log('results[0]', results)
+        console.log('formatted_address', formatted_address)
+        // self.setState({query:results[0].formatted_address})
+        // self.setState({address:results[0].formatted_address})
+        self.props.setAddress(formatted_address)
+      }
+    })
 
   });
 }
@@ -70,7 +75,8 @@ searchByGeolocation(){
               <GooglePlaces
                 options={{ input: this.state.query }}
                 itemProps={{ onClick: this.props.setAddress }}
-                itemComponent={PlaceItemSearch} />
+                itemComponent={PlaceItemSearch} 
+                 />
             </div>
           </div>
         </div>
