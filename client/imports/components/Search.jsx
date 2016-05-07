@@ -9,6 +9,34 @@ export default class Search extends React.Component {
     this.state = { query: '' };
   }
 
+searchByGeolocation(){
+  const self = this;
+  navigator.geolocation.getCurrentPosition(function(position) {
+  var lat = position.coords.latitude
+  var long = position.coords.longitude
+  APIKEY=''
+  // let url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long+'&key='+APIKEY  
+  // HTTP.call( 'GET', url, function( error, response ) {
+  //   console.log('error', error)
+  //   console.log('response', response.data.results[0].formatted_address)
+  //   var returnedQ = response.data.results[0].formatted_address
+     
+  //   self.setState({query:returnedQ})
+  // });
+
+  const latlng = {lat: Number(lat), lng:Number(long)}
+  const geocoder = new google.maps.Geocoder;
+  geocoder.geocode({'location':latlng}, function(results, status){
+    if (results[0].formatted_address){
+      self.setState({query:results[0].formatted_address})
+    }
+  })
+
+  });
+}
+
+
+
   render() {
     return (
       <div className="body-color">
@@ -27,7 +55,11 @@ export default class Search extends React.Component {
             name="address-2"
             data-name="Address 2"
             className="w-input input"
-          />
+          /> <img
+        onClick={() => this.searchByGeolocation()}
+        alt="target icon"
+        src="images/input-icon.svg"
+        className="address-icon"/>
           {
             this.state.query
               ? null
